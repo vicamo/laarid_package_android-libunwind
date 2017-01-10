@@ -1,0 +1,6 @@
+android-libunwind for Debian
+----------------------------
+
+Debian port from Android platform/external/libunwind.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Tue, 10 Jan 2016 23:21:47 +0800
