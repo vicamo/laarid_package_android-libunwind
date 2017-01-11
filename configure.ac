@@ -34,7 +34,10 @@ esac
 CHECK_ATOMIC_OPS
 
 # ANDROID support update.
+CFLAGS_save="${CFLAGS}"
+CFLAGS="${CFLAGS} -D__ANDROID__"
 CHECK_ANDROID
+CFLAGS="${CFLAGS_save}"
 # End of ANDROID update.
 
 dnl Checks for header files.
@@ -95,6 +98,7 @@ AC_DEFUN([SET_ARCH],[
         [arm*],[$2=arm],
         [i?86],[$2=x86],
         [hppa*],[$2=hppa],
+        [mips64*],[$2=mips64],
         [mips*],[$2=mips],
         [powerpc*],[$2=ppc$ppc_bits],
         [sh*],[$2=sh],
@@ -106,29 +110,8 @@ SET_ARCH([$build_cpu],[build_arch])
 SET_ARCH([$host_cpu],[host_arch])
 SET_ARCH([$target_cpu],[target_arch])
 
-AC_ARG_ENABLE(coredump,
-	AS_HELP_STRING([--enable-coredump],[building libunwind-coredump library]),,
-        [AS_CASE([$host_arch], [aarch64*|arm*|mips*|sh*|x86*], [enable_coredump=yes], [enable_coredump=no])]
-)
-
-AC_MSG_CHECKING([if we should build libunwind-coredump])
-AC_MSG_RESULT([$enable_coredump])
-
-AC_ARG_ENABLE(ptrace,
-	AS_HELP_STRING([--enable-ptrace],[building libunwind-ptrace library]),,
-        [AC_CHECK_HEADER([sys/ptrace.h], [enable_ptrace=yes], [enable_ptrace=no])]
-)
-
-AC_MSG_CHECKING([if we should build libunwind-ptrace])
-AC_MSG_RESULT([$enable_ptrace])
-
-AC_ARG_ENABLE(setjmp,
-	AS_HELP_STRING([--enable-setjmp],[building libunwind-setjmp library]),,
-        [AS_IF([test x$target_arch == x$host_arch], [enable_setjmp=yes], [enable_setjmp=no])]
-)
-
-AC_MSG_CHECKING([if we should build libunwind-setjmp])
-AC_MSG_RESULT([$enable_setjmp])
+AC_CHECK_HEADERS([sys/ptrace.h],
+	[], [AC_MSG_ERROR([Missing sys/ptrace.h])])
 
 AC_MSG_CHECKING([for build architecture])
 AC_MSG_RESULT([$build_arch])
@@ -139,15 +122,12 @@ AC_MSG_RESULT([$target_arch])
 AC_MSG_CHECKING([for target operating system])
 AC_MSG_RESULT([$target_os])
 
-AM_CONDITIONAL(BUILD_COREDUMP, test x$enable_coredump = xyes)
-AM_CONDITIONAL(BUILD_PTRACE, test x$enable_ptrace = xyes)
-AM_CONDITIONAL(BUILD_SETJMP, test x$enable_setjmp = xyes)
-AM_CONDITIONAL(REMOTE_ONLY, test x$target_arch != x$host_arch)
 AM_CONDITIONAL(ARCH_AARCH64, test x$target_arch = xaarch64)
 AM_CONDITIONAL(ARCH_ARM, test x$target_arch = xarm)
 AM_CONDITIONAL(ARCH_IA64, test x$target_arch = xia64)
 AM_CONDITIONAL(ARCH_HPPA, test x$target_arch = xhppa)
 AM_CONDITIONAL(ARCH_MIPS, test x$target_arch = xmips)
+AM_CONDITIONAL(ARCH_MIPS64, test x$target_arch = xmips64)
 AM_CONDITIONAL(ARCH_X86, test x$target_arch = xx86)
 AM_CONDITIONAL(ARCH_X86_64, test x$target_arch = xx86_64)
 AM_CONDITIONAL(ARCH_PPC32, test x$target_arch = xppc32)
@@ -160,9 +140,8 @@ AM_CONDITIONAL(OS_QNX, expr x$target_os : xnto-qnx >/dev/null)
 
 AC_MSG_CHECKING([for ELF helper width])
 case "${target_arch}" in
-(arm|hppa|ppc32|x86|sh) use_elf32=yes; AC_MSG_RESULT([32]);;
-(aarch64|ia64|ppc64|x86_64)    use_elf64=yes; AC_MSG_RESULT([64]);;
-(mips)                 use_elfxx=yes; AC_MSG_RESULT([xx]);;
+(arm|hppa|mips|ppc32|x86|sh) use_elf32=yes; AC_MSG_RESULT([32]);;
+(aarch64|ia64|mips64|ppc64|x86_64)    use_elf64=yes; AC_MSG_RESULT([64]);;
 *)                     AC_MSG_ERROR([Unknown ELF target: ${target_arch}])
 esac
 AM_CONDITIONAL(USE_ELF32, [test x$use_elf32 = xyes])
@@ -183,15 +162,6 @@ if test x$target_arch = xppc64; then
         AC_MSG_NOTICE([PowerPC64 detected, lib will be installed ${libdir}]);
         AC_SUBST([libdir])
 fi
-
-AC_MSG_CHECKING([whether to restrict build to remote support])
-if test x$target_arch != x$host_arch; then
-  CPPFLAGS="${CPPFLAGS} -DUNW_REMOTE_ONLY"
-  remote_only=yes
-else
-  remote_only=no
-fi
-AC_MSG_RESULT([$remote_only])
 
 AC_MSG_CHECKING([whether to enable debug support])
 AC_ARG_ENABLE(debug,
@@ -381,10 +351,9 @@ AC_SUBST(enable_cxx_exceptions)
 AC_SUBST(enable_debug_frame)
 AC_SUBST(DLLIB)
 
-AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile tests/check-namespace.sh
-		doc/Makefile doc/common.tex include/libunwind-common.h
-                include/libunwind.h include/tdep/libunwind_i.h)
-AC_CONFIG_FILES(src/unwind/libunwind.pc src/coredump/libunwind-coredump.pc
-                src/ptrace/libunwind-ptrace.pc src/setjmp/libunwind-setjmp.pc
-                src/libunwind-generic.pc)
+AC_CONFIG_FILES(Makefile tests/check-namespace.sh
+		doc/common.tex include/libunwind-common.h
+                include/libunwind.h include/tdep/libunwind_i.h
+                src/android-unwind-0.0.pc
+                src/android-unwind-backtrace-0.0.pc)
 AC_OUTPUT

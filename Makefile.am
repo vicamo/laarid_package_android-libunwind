@@ -1,45 +1,42 @@
-include_HEADERS = include/libunwind-dynamic.h \
+unwindincdir = $(includedir)/android/libunwind-0.0
+unwindinc_HEADERS = include/libunwind-dynamic.h \
     include/libunwind-ptrace.h \
     include/libunwind-coredump.h
 
 if ARCH_AARCH64
-include_HEADERS += include/libunwind-aarch64.h
+unwindinc_HEADERS += include/libunwind-aarch64.h
 endif
 if ARCH_ARM
-include_HEADERS += include/libunwind-arm.h
+unwindinc_HEADERS += include/libunwind-arm.h
 endif
 if ARCH_IA64
-include_HEADERS += include/libunwind-ia64.h
+unwindinc_HEADERS += include/libunwind-ia64.h
 endif
 if ARCH_HPPA
-include_HEADERS += include/libunwind-hppa.h
+unwindinc_HEADERS += include/libunwind-hppa.h
 endif
 if ARCH_MIPS
-include_HEADERS += include/libunwind-mips.h
+unwindinc_HEADERS += include/libunwind-mips.h
 endif
 if ARCH_X86
-include_HEADERS += include/libunwind-x86.h
+unwindinc_HEADERS += include/libunwind-x86.h
 endif
 if ARCH_X86_64
-include_HEADERS += include/libunwind-x86_64.h
+unwindinc_HEADERS += include/libunwind-x86_64.h
 endif
 if ARCH_PPC32
-include_HEADERS += include/libunwind-ppc32.h
+unwindinc_HEADERS += include/libunwind-ppc32.h
 endif
 if ARCH_PPC64
-include_HEADERS += include/libunwind-ppc64.h
+unwindinc_HEADERS += include/libunwind-ppc64.h
 endif
 if ARCH_SH
-include_HEADERS += include/libunwind-sh.h
+unwindinc_HEADERS += include/libunwind-sh.h
 endif
 
-if !REMOTE_ONLY
-include_HEADERS += include/libunwind.h include/unwind.h
-endif
+unwindinc_HEADERS += include/libunwind.h include/unwind.h
 
 nodist_include_HEADERS = include/libunwind-common.h
-
-SUBDIRS = src tests doc
 
 noinst_HEADERS = include/dwarf.h include/dwarf_i.h include/dwarf-eh.h	\
 	include/compiler.h include/libunwind_i.h include/mempool.h	\
@@ -68,19 +65,55 @@ noinst_HEADERS = include/dwarf.h include/dwarf_i.h include/dwarf-eh.h	\
 	include/tdep/libunwind_i.h					\
 	include/tdep/jmpbuf.h include/tdep/dwarf-config.h
 
-EXTRA_DIST = include/libunwind-common.h.in
+SOVERSION=8:1:0		# See comments at end of file.
+SETJMP_SO_VERSION=0:0:0
+COREDUMP_SO_VERSION=0:0:0
 
+#
+# Don't link with start-files since we don't use any constructors/destructors:
+#
+COMMON_SO_LDFLAGS = $(LDFLAGS_NOSTARTFILES)
+
+# Distribution
+# ------------
+lib_LTLIBRARIES =
+pkgconfig_DATA =
+EXTRA_DIST =
+BUILT_SOURCES =
+CLEANFILES =
+DISTCLEANFILES =
 MAINTAINERCLEANFILES = \
-	Makefile.in \
-	INSTALL \
-	aclocal.m4 \
-	configure \
-	config/compile \
-	config/config.guess \
-	config/config.sub \
-	config/depcomp \
-	config/install-sh \
-	config/ltmain.sh \
-	config/missing \
-	include/config.h.in \
-	include/config.h.in~
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN) \
+	INSTALL
+
+# We're running CI in docker, which reports host architecture as host,
+# not the docker image architecture as we expected, so specifying the
+# host/build information is necessary here.
+DISTCHECK_CONFIGURE_FLAGS = \
+	--host=$(host) \
+	--build=$(build) \
+	--disable-dependency-tracking \
+	--disable-maintainer-mode \
+	--enable-debug-frame \
+	--disable-block-signals \
+	--enable-msabi-support \
+	--disable-minidebuginfo
+
+GITIGNOREFILES = \
+	build \
+	debian \
+	$(DIST_ARCHIVES)
+
+AM_CPPFLAGS = \
+    -I$(top_srcdir)/include \
+    -I$(top_srcdir)/include/tdep-$(arch) \
+    -I$(top_srcdir)/src \
+    -DANDROID -D__ANDROID__
+AM_CCASFLAGS = $(AM_CPPFLAGS)
+
+include $(srcdir)/Android.mk
+-include $(top_srcdir)/git.mk
+
+pkgconfigdir = $(libdir)/pkgconfig

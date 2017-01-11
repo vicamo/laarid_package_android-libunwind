@@ -1,0 +1,6 @@
+The Debian Package libandroid-unwind8
+-------------------------------------
+
+This package contains libraries built from Android platform/external/libunwind.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Tue, 10 Jan 2016 23:21:47 +0800

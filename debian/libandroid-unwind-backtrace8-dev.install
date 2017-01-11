@@ -1,0 +1,3 @@
+usr/lib/*/libandroid-unwind-backtrace.a
+usr/lib/*/libandroid-unwind-backtrace.so
+usr/lib/*/pkgconfig/android-unwind-backtrace-0.0.pc

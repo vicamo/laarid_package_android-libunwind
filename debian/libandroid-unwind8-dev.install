@@ -1,0 +1,4 @@
+usr/include/*
+usr/lib/*/libandroid-unwind.a
+usr/lib/*/libandroid-unwind.so
+usr/lib/*/pkgconfig/android-unwind-0.0.pc
