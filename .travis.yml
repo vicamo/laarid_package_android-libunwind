@@ -25,6 +25,11 @@ env:
   - BINTRAY_COMPONENT=main
   - BINTRAY_DESC="Android libunwind"
 
+matrix:
+  fast_finish: true
+  allow_failures:
+  - env: IMAGE_ARCH=s390x
+
 branches:
   only:
   - master
