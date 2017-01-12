@@ -351,6 +351,33 @@ AC_SUBST(enable_cxx_exceptions)
 AC_SUBST(enable_debug_frame)
 AC_SUBST(DLLIB)
 
+# GTest
+# -----
+AC_LANG_PUSH([C++])
+AC_ARG_WITH([gtest],
+  [AS_HELP_STRING([--with-gtest],
+    [Build with Google Test Frameworks based tests @<:@default=check@:>@])],
+  [], [])
+AS_IF([test "x${with_gtest}" != xno],
+  [GTEST_SRCDIR="/usr/src/gtest"
+  AS_IF([test "x${with_gtest}" != xyes],
+    [AS_IF([test -e "${with_gtest}/include/gtest/gtest.h"],
+      [GTEST_SRCDIR="${with_gtest}"])])
+  CPPFLAGS_save="$CPPFLAGS"
+  GTEST_CPPFLAGS="-I ${GTEST_SRCDIR}/include"
+  GTEST_LIBS="libgtest.la libgtest_main.la"
+  CPPFLAGS="${GTEST_CPPFLAGS}"
+  AC_CHECK_HEADER([gtest/gtest.h], [],
+    [AS_IF([test "x${with_gtest}" != xyes],
+      [AC_MSG_ERROR([Google Test Frameworks source folder not found])],
+      [with_gtest=no])])
+  CPPFLAGS="$CPPFLAGS_save"])
+AC_SUBST([GTEST_CPPFLAGS])
+AC_SUBST([GTEST_LIBS])
+AC_SUBST([GTEST_SRCDIR])
+AC_LANG_POP()
+AM_CONDITIONAL([HAVE_GTEST], [test "x${with_gtest}" != xno])
+
 AC_CONFIG_FILES(Makefile tests/check-namespace.sh
 		doc/common.tex include/libunwind-common.h
                 include/libunwind.h include/tdep/libunwind_i.h

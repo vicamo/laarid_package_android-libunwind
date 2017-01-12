@@ -438,3 +438,28 @@ src_libandroid_unwind_backtrace_la_LIBADD = \
     src/libandroid-unwind.la
 src_libandroid_unwind_backtrace_la_LDFLAGS = \
     -version-info $(SOVERSION)
+
+if HAVE_GTEST
+#-----------------------------------------------------------------------
+# libunwind testing
+#-----------------------------------------------------------------------
+check_PROGRAMS += \
+    android/tests/libunwind-unit-tests
+
+TESTS += \
+    android/tests/libunwind-unit-tests
+
+android_tests_libunwind_unit_tests_CPPFLAGS = \
+    -I$(top_srcdir)/include \
+    $(GTEST_CPPFLAGS)
+android_tests_libunwind_unit_tests_CXXFLAGS = \
+    -fno-builtin -O0 -g
+android_tests_libunwind_unit_tests_SOURCES = \
+    android/tests/local_test.cpp
+android_tests_libunwind_unit_tests_LDADD = \
+    src/libandroid-unwind.la \
+    $(GTEST_LIBS)
+android_tests_libunwind_unit_tests_DEPENDENCIES = \
+    src/libandroid-unwind.la \
+    $(GTEST_LIBS)
+endif # HAVE_GTEST

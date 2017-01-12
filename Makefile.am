@@ -76,8 +76,11 @@ COMMON_SO_LDFLAGS = $(LDFLAGS_NOSTARTFILES)
 
 # Distribution
 # ------------
+check_LTLIBRARIES =
+check_PROGRAMS =
 lib_LTLIBRARIES =
 pkgconfig_DATA =
+TESTS =
 EXTRA_DIST =
 BUILT_SOURCES =
 CLEANFILES =
@@ -113,6 +116,7 @@ AM_CPPFLAGS = \
     -DANDROID -D__ANDROID__
 AM_CCASFLAGS = $(AM_CPPFLAGS)
 
+include $(srcdir)/gtest.mk
 include $(srcdir)/Android.mk
 -include $(top_srcdir)/git.mk
 

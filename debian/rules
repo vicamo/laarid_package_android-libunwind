@@ -13,6 +13,10 @@ CONFFLAGS = \
 	--enable-msabi-support \
 	--disable-minidebuginfo
 
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+CONFFLAGS += --without-gtest
+endif
+
 # main packaging script based on dh7 syntax
 %:
 	dh $@ --with autoreconf --builddirectory=build --parallel
