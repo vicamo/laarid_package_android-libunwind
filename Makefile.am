@@ -18,6 +18,9 @@ endif
 if ARCH_MIPS
 unwindinc_HEADERS += include/libunwind-mips.h
 endif
+if ARCH_MIPS64
+unwindinc_HEADERS += include/libunwind-mips.h
+endif
 if ARCH_X86
 unwindinc_HEADERS += include/libunwind-x86.h
 endif

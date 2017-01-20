@@ -1,3 +1,9 @@
+android-libunwind (0.0.2) testing; urgency=low
+
+  * Add back missed libunwind-mips.h on mips64 arch.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Fri, 20 Jan 2017 21:51:24 +0800
+
 android-libunwind (0.0.1) testing; urgency=low
 
   * Initial Release.
