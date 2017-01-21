@@ -429,7 +429,6 @@ src_libandroid_unwind_backtrace_la_CFLAGS = \
     -fvisibility=hidden
 src_libandroid_unwind_backtrace_la_CPPFLAGS = \
     $(AM_CPPFLAGS)
-#    -DUNW_ADDITIONAL_PREFIX
 if ARCH_MIPS64
 src_libandroid_unwind_backtrace_la_CPPFLAGS += \
     -I$(top_srcdir)/include/tdep-mips
