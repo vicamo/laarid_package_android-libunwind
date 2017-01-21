@@ -11,7 +11,7 @@ CONFFLAGS = \
 	--enable-debug-frame \
 	--disable-block-signals \
 	--enable-msabi-support \
-	--disable-minidebuginfo
+	--enable-minidebuginfo
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 CONFFLAGS += --without-gtest

@@ -105,7 +105,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-debug-frame \
 	--disable-block-signals \
 	--enable-msabi-support \
-	--disable-minidebuginfo
+	--enable-minidebuginfo
 
 GITIGNOREFILES = \
 	build \
