@@ -1,3 +1,9 @@
+android-libunwind (0.0.3+b1) testing; urgency=low
+
+  * correct package dependencies
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Mon, 23 Jan 2017 20:47:13 +0800
+
 android-libunwind (0.0.3) testing; urgency=low
 
   * Merge aosp/nougat-dev
