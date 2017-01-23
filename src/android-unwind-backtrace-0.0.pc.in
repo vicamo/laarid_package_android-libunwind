@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: android-unwind-backtrace-0.0
 Description: libunwind backtrace library for Android
 Version: @VERSION@
+Requires.private: android-unwind-0.0 = @VERSION@
 Libs: -L${libdir} -landroid-unwind-backtrace
-Libs.private: @LIBLZMA@
 Cflags: -I${includedir}/android/libunwind-0.0

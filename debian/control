@@ -38,6 +38,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: libandroid-unwind-backtrace8 (= ${binary:Version}),
+         libandroid-unwind8-dev (= ${binary:Version}),
          ${misc:Depends}
 Description: Android libunwindbacktrace - development
  This package contains libraries built from Android platform/external/libunwind.
