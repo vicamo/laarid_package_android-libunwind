@@ -39,7 +39,7 @@ endif
 
 unwindinc_HEADERS += include/libunwind.h include/unwind.h
 
-nodist_include_HEADERS = include/libunwind-common.h
+nodist_unwindinc_HEADERS = include/libunwind-common.h
 
 noinst_HEADERS = include/dwarf.h include/dwarf_i.h include/dwarf-eh.h	\
 	include/compiler.h include/libunwind_i.h include/mempool.h	\
